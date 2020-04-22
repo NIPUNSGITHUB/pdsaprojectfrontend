@@ -9,47 +9,52 @@
               <div class="text-left">
                 <label class="typo__label">From</label>
                 <multiselect
-                  v-model="value"
+                  v-if="isEdit == false"
+                  v-model="fromStation"
                   deselect-label="Can't remove this value"
-                  track-by="name"
+                  track-by="id"
                   label="name"
                   placeholder="Select one"
-                  :options="options"
+                  :options="stations"
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
+                <h5 v-else>{{ fromStation }}</h5>
               </div>
             </div>
             <div class="col-md-4">
               <div class="text-left">
                 <label class="typo__label">To</label>
                 <multiselect
-                  v-model="value"
+                  v-if="isEdit == false"
+                  v-model="toStation"
                   deselect-label="Can't remove this value"
-                  track-by="name"
+                  track-by="id"
                   label="name"
                   placeholder="Select one"
-                  :options="options"
+                  :options="stations"
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
+                <h5 v-else>{{ toStation }}</h5>
               </div>
             </div>
             <div class="col-md-4">
               <div class="form-group text-left">
-                <label>Distance</label>
+                <label>Distance (km)</label>
                 <input
                   type="text"
                   class="form-control"
-                  name
-                  id
+                  v-model="DistanceKm"
                   aria-describedby="helpId"
                   placeholder="Please enter distance"
                 />
               </div>
             </div>
           </div>
-          <button class="btn btn-success float-right pb-4">Submit</button>
+          <button class="btn btn-info float-right pb-4 ml-1" @click="formReset">Cancel</button>
+          <button class="btn btn-success float-right pb-4" v-if="isEdit" @click="updateDistance">Update</button>
+          <button class="btn btn-success float-right pb-4" v-else @click="addDistance">Submit</button>
         </div>
       </div>
     </div>
@@ -68,27 +73,18 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>1</td>
-                <td>Kottawa</td>
-                <td>Maharagama</td>
-                <td>3</td>
+              <tr v-for="stationDistance in stationDistances" :key="stationDistance.id">
+                <td>{{ stationDistance.id }}</td>
+                <td>{{ stationDistance.fromStation }}</td>
+                <td>{{ stationDistance.toStation }}</td>
+                <td>{{ stationDistance.distanceKm }}</td>
                 <td>
                   <div class="row justify-content-center">
                     <Button class="btn btn-sm btn-danger">Delete</Button>
-                    <button class="btn btn-sm btn-primary ml-1">Update</button>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>2</td>
-                <td>Maharagama</td>
-                <td>Maharagama</td>
-                <td>3</td>
-                <td>
-                  <div class="row justify-content-center">
-                    <Button class="btn btn-sm btn-danger">Delete</Button>
-                    <button class="btn btn-sm btn-primary ml-1">Update</button>
+                    <button
+                      class="btn btn-sm btn-primary ml-1"
+                      @click="setToUpdate(stationDistance)"
+                    >Update</button>
                   </div>
                 </td>
               </tr>
@@ -97,22 +93,135 @@
         </div>
       </div>
     </div>
-   
   </div>
 </template>
 <script>
 export default {
   data() {
     return {
-      value: null,
-      options: [
-        { name: "Vue.js", language: "JavaScript" },
-        { name: "Rails", language: "Ruby" },
-        { name: "Sinatra", language: "Ruby" },
-        { name: "Laravel", language: "PHP", $isDisabled: true },
-        { name: "Phoenix", language: "Elixir" }
-      ]
+      fromStation: null,
+      id: null,
+      toStation: null,
+      DistanceKm: null,
+      isEdit: false,
+      stations: [],
+      stationDistances: []
     };
+  },
+  mounted() {
+    this.populateStations();
+    this.populateStationDistances();
+  },
+  methods: {
+    formReset() {
+      this.fromStation = null;
+      this.toStation = null;
+      this.DistanceKm = null;
+      this.isEdit = false;
+    },
+    setToUpdate(stationDistance) {
+      this.isEdit = true;
+      this.fromStation = stationDistance.fromStation;
+      this.toStation = stationDistance.toStation;
+      this.DistanceKm = stationDistance.distanceKm;
+      this.id = stationDistance.id;
+    },
+    populateStations() {
+      this.axios
+        .get("/Station")
+        .then(res => {
+          console.log(res);
+          this.stations = res.data;
+          this.formReset();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    populateStationDistances() {
+      this.axios
+        .get("/Distance")
+        .then(res => {
+          console.log(res);
+          this.stationDistances = res.data;
+          this.formReset();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    },
+    addDistance() {
+      if (
+        this.fromStation != null &&
+        this.toStation != null &&
+        this.DistanceKm != null
+      ) {
+        if (this.fromStation.id != this.toStation.id) {
+          this.axios
+            .post("/Distance", {
+              fromStation: this.fromStation.name,
+              toStation: this.toStation.name,
+              DistanceKm: this.DistanceKm
+            })
+            .then(res => {
+              console.log(res);
+              if (res.status == 200) {
+                this.populateStationDistances();
+                this.$notify({
+                  group: "foo",
+                  type: "success",
+                  title: "Important message",
+                  text: "Order placed successfull!"
+                });
+              }
+            })
+            .catch(error => {
+              this.$notify({
+                group: "foo",
+                type: "danger",
+                title: "Important message",
+                text: error
+              });
+            });
+        } else {
+          alert("can't use same location for from and to stations");
+        }
+      } else {
+        alert("Please fill the feilds");
+      }
+    },
+    updateDistance() {
+      if (this.DistanceKm != null) {
+        this.axios
+          .post("/Distance", {
+            id: this.id,
+            DistanceKm: this.DistanceKm
+          })
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              this.populateStationDistances();
+              this.$notify({
+                group: "foo",
+                type: "success",
+                title: "Important message",
+                text: "Order placed successfull!"
+              });
+            }
+          })
+          .catch(error => {
+            this.$notify({
+                group: "foo",
+                type: "danger",
+                title: "Important message",
+                text: error
+              });
+            console.log(error);
+          });
+      } else {
+        alert("Please fill the feilds");
+      }
+    }
   }
 };
 </script>

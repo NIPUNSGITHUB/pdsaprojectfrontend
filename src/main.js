@@ -3,16 +3,20 @@ import App from './App.vue'
 import Multiselect from 'vue-multiselect'
 import VueRouter from 'vue-router'
 import '../node_modules/vue-multiselect/dist/vue-multiselect.min.css';
-
+import Notifications from 'vue-notification'
 Vue.config.productionTip = false
 
 import Login from "./components/Login.vue";
 import LocationCrud from "./components/LocationCrud.vue";
 import LocationDistance from "./components/LocationDistance.vue";
 import LocationFind from "./components/LocationFind.vue";
-
+import axios from 'axios'
+import VueAxios from 'vue-axios'
+ 
+Vue.use(VueAxios, axios)
 Vue.use(VueRouter) 
-Vue.component('multiselect', Multiselect)
+Vue.component('multiselect', Multiselect) 
+Vue.use(Notifications)
 
 const routes = [
   {

@@ -33,7 +33,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav">
           <li class="nav-item">
-            <router-link to="/" exact class="nav-link">Manage Location</router-link>
+            <router-link to="/" exact class="nav-link">Manage Station</router-link>
           </li>
           <li class="nav-item">
             <router-link to="/location/distance" exact class="nav-link">Manage Distance</router-link>
@@ -59,6 +59,7 @@
     </nav>
 
     <div>
+       <notifications group="foo" />
       <router-view></router-view>
     </div>
   </div>
