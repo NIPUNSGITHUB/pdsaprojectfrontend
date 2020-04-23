@@ -50,7 +50,7 @@
     <div class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h5 v-if="fromStation != null && toStation != null" class="card-title text-success">Minimum distance from {{ fromStation.name }} to {{ toStation.name }} is 198km</h5>
+          <h5 v-if="pathDetails != ''" class="card-title text-success">Minimum distance from {{ fromStation.name }} to {{ toStation.name }} is {{ minDistance }}km</h5>
           <h5 v-else class="card-title text-danger">Distance not found</h5>
         </div>
       </div>
@@ -61,6 +61,7 @@
         <ul class="list-group text-left">
           <li v-for="pathDetail in pathDetails" :key="pathDetail.key" class="list-group-item">
             <strong>{{ pathDetail.key }}</strong>&nbsp;({{ pathDetail.value }})
+           <strong style="visibility:hidden" v-if="toStation.name == pathDetail.key">{{ minDistance = pathDetail.value }}</strong>
           </li>        
         </ul>
       </div>
@@ -85,7 +86,8 @@ export default {
       isEdit: false,
       fromStation: null,
       toStation: null,
-      pathDetails:[]
+      pathDetails:[],
+      minDistance:0.0
     };
   },
   mounted() {
@@ -105,7 +107,11 @@ export default {
         });
     },
     shortestPath() {
-      this.axios
+       if (
+        this.fromStation != null &&
+        this.toStation != null 
+      ) {
+        this.axios
         .post("/ShortestPath", {
           id: this.id,
           fromLocation: this.fromStation.name,
@@ -121,6 +127,9 @@ export default {
           alert(error)
           console.log(error);
         });
+      }else {
+        alert("Select the locations");
+      }
     }
   }
 };

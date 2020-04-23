@@ -1,8 +1,7 @@
 <template>
   <div>
     <div class="container">
-      <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-        <img class="card-img-top" src="holder.js/100x180/" alt />
+      <div class="card shadow-lg p-3 mb-5 bg-white rounded"> 
         <div class="card-body">
           <h4 class="card-title">Manage Station</h4>
           <div class="col-md-10">
@@ -174,7 +173,7 @@ export default {
       var r = confirm("Press a button!");
       if (r == true) {
         this.axios
-          .get("/Station/" + station.id)
+          .post("/Station/Delete",station)
           .then(res => {
             console.log(res);
             if (res.status == 200) {

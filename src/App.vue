@@ -9,7 +9,7 @@
       <img
         id="phones"
         class="float-right rounded-circle"
-        src="https://www.bestilling.medco-bht.no/assets/img/avatar.png"
+        src="/avatar.png"
         width="50px"
         height="50px"
         alt
@@ -47,7 +47,7 @@
       <img
         id="desktops"
         class="float-right rounded-circle"
-        src="https://www.bestilling.medco-bht.no/assets/img/avatar.png"
+        src="/avatar.png"
         width="50px"
         height="50px"
         alt
