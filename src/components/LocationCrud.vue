@@ -98,9 +98,24 @@ export default {
           })
           .then(res => {
             console.log(res);
-            this.populateStations();
+            if (res.status == 200) {
+              this.populateStations();
+
+              this.$notify({
+                group: "foo",
+                type: "success",
+                title: "Important message",
+                text: "Successfull!"
+              });
+            }
           })
           .catch(error => {
+            this.$notify({
+              group: "foo",
+              type: "danger",
+              title: "Important message",
+              text: error
+            });
             console.log(error);
           });
       } else {
@@ -115,10 +130,25 @@ export default {
         })
         .then(res => {
           console.log(res);
-          this.formReset();
-          this.populateStations();
+          if (res.status == 200) {
+            this.formReset();
+            this.populateStations();
+
+            this.$notify({
+              group: "foo",
+              type: "success",
+              title: "Important message",
+              text: "Successfull!"
+            });
+          }
         })
         .catch(error => {
+          this.$notify({
+            group: "foo",
+            type: "danger",
+            title: "Important message",
+            text: error
+          });
           console.log(error);
         });
     },
@@ -131,6 +161,12 @@ export default {
           this.formReset();
         })
         .catch(error => {
+          this.$notify({
+            group: "foo",
+            type: "danger",
+            title: "Important message",
+            text: error
+          });
           console.log(error);
         });
     },
@@ -141,12 +177,27 @@ export default {
           .get("/Station/" + station.id)
           .then(res => {
             console.log(res);
-            this.populateStations();
+            if (res.status == 200) {
+              this.populateStations();
+
+              this.$notify({
+                group: "foo",
+                type: "success",
+                title: "Important message",
+                text: "Successfull!"
+              });
+            }
           })
           .catch(error => {
+            this.$notify({
+              group: "foo",
+              type: "danger",
+              title: "Important message",
+              text: error
+            });
             console.log(error);
           });
-      } 
+      }
     }
   }
 };

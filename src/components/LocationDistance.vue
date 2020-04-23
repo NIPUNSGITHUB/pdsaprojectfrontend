@@ -142,6 +142,12 @@ export default {
           this.formReset();
         })
         .catch(error => {
+          this.$notify({
+            group: "foo",
+            type: "danger",
+            title: "Important message",
+            text: error
+          });
           console.log(error);
         });
     },
@@ -154,6 +160,12 @@ export default {
           this.formReset();
         })
         .catch(error => {
+          this.$notify({
+            group: "foo",
+            type: "danger",
+            title: "Important message",
+            text: error
+          });
           console.log(error);
         });
     },
@@ -178,7 +190,7 @@ export default {
                   group: "foo",
                   type: "success",
                   title: "Important message",
-                  text: "successfull!"
+                  text: "Successfull!"
                 });
               }
             })
@@ -202,8 +214,8 @@ export default {
         this.axios
           .post("/Distance", {
             id: this.id,
-            fromStation:this.fromStation,
-            toStation:this.toStation,
+            fromStation: this.fromStation,
+            toStation: this.toStation,
             DistanceKm: this.DistanceKm
           })
           .then(res => {
@@ -214,7 +226,7 @@ export default {
                 group: "foo",
                 type: "success",
                 title: "Important message",
-                text: "Order placed successfull!"
+                text: "Successfull!"
               });
             }
           })
@@ -236,7 +248,7 @@ export default {
       if (r == true) {
         this.axios
           .post("/Distance/Delete", {
-            id:stationDistance.id
+            id: stationDistance.id
           })
           .then(res => {
             console.log(res);
@@ -246,7 +258,7 @@ export default {
                 group: "foo",
                 type: "success",
                 title: "Important message",
-                text: "successfull!"
+                text: "Successfull!"
               });
             }
           })

@@ -40,56 +40,28 @@
               </div>
             </div>
             <div class="col-md-4">
-              <div class="form-group text-left">
-                <label>Distance</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  name
-                  id
-                  aria-describedby="helpId"
-                  placeholder="Please enter distance"
-                />
-              </div>
+            
             </div>
           </div>
-          <button class="btn btn-success float-right pb-4">Search</button>
+          <button class="btn btn-success float-right pb-4" @click="shortestPath">Search</button>
         </div>
       </div>
     </div>
     <div class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h5 class="card-title text-success">Minimum distance from Anuradhapura to Gampaha is 198km</h5>
-          <h5 class="card-title text-danger">Distance not found</h5>
+          <h5 v-if="fromStation != null && toStation != null" class="card-title text-success">Minimum distance from {{ fromStation.name }} to {{ toStation.name }} is 198km</h5>
+          <h5 v-else class="card-title text-danger">Distance not found</h5>
         </div>
       </div>
     </div>
-    <div class="container">
+    <div v-if="pathDetails != ''" class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-        <h5 class="card-title text-left">Anuradhapura to</h5>
+        <h5  class="card-title text-left">{{ fromStation.name }} to</h5>
         <ul class="list-group text-left">
-          <li class="list-group-item">
-            <strong>Kurunagala</strong>&nbsp;(90km)
-          </li>
-          <li class="list-group-item">
-            <strong>Anuradhapura</strong>&nbsp;(0km)
-          </li>
-          <li class="list-group-item">
-            <strong>Galigamuwa</strong>&nbsp;(60km)
-          </li>
-          <li class="list-group-item">
-            <strong>Ragama</strong>&nbsp;(210km)
-          </li>
-          <li class="list-group-item">
-            <strong>Kalaniya</strong>&nbsp;(222km)
-          </li>
-          <li class="list-group-item">
-            <strong>Colombo</strong>&nbsp;(243)
-          </li>
-          <li class="list-group-item">
-            <strong>Galle</strong>&nbsp;(393km)
-          </li>
+          <li v-for="pathDetail in pathDetails" :key="pathDetail.key" class="list-group-item">
+            <strong>{{ pathDetail.key }}</strong>&nbsp;({{ pathDetail.value }})
+          </li>        
         </ul>
       </div>
     </div>
@@ -110,7 +82,10 @@ export default {
       stationId: null,
       stationName: null,
       stations: [],
-      isEdit: false
+      isEdit: false,
+      fromStation: null,
+      toStation: null,
+      pathDetails:[]
     };
   },
   mounted() {
@@ -123,9 +98,27 @@ export default {
         .then(res => {
           console.log(res);
           this.stations = res.data;
-          this.formReset();
+          // this.formReset();
         })
         .catch(error => {
+          console.log(error);
+        });
+    },
+    shortestPath() {
+      this.axios
+        .post("/ShortestPath", {
+          id: this.id,
+          fromLocation: this.fromStation.name,
+          toLocation: this.toStation.name
+        })
+        .then(res => {
+          console.log(res);
+          if (res.status == 200) {
+            this.pathDetails = res.data;
+          }
+        })
+        .catch(error => {
+          alert(error)
           console.log(error);
         });
     }
