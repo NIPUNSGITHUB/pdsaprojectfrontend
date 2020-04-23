@@ -53,7 +53,11 @@
             </div>
           </div>
           <button class="btn btn-info float-right pb-4 ml-1" @click="formReset">Cancel</button>
-          <button class="btn btn-success float-right pb-4" v-if="isEdit" @click="updateDistance">Update</button>
+          <button
+            class="btn btn-success float-right pb-4"
+            v-if="isEdit"
+            @click="updateDistance"
+          >Update</button>
           <button class="btn btn-success float-right pb-4" v-else @click="addDistance">Submit</button>
         </div>
       </div>
@@ -80,7 +84,10 @@
                 <td>{{ stationDistance.distanceKm }}</td>
                 <td>
                   <div class="row justify-content-center">
-                    <Button class="btn btn-sm btn-danger">Delete</Button>
+                    <Button
+                      class="btn btn-sm btn-danger"
+                      @click="removeStation(stationDistance)"
+                    >Delete</Button>
                     <button
                       class="btn btn-sm btn-primary ml-1"
                       @click="setToUpdate(stationDistance)"
@@ -171,7 +178,7 @@ export default {
                   group: "foo",
                   type: "success",
                   title: "Important message",
-                  text: "Order placed successfull!"
+                  text: "successfull!"
                 });
               }
             })
@@ -195,6 +202,8 @@ export default {
         this.axios
           .post("/Distance", {
             id: this.id,
+            fromStation:this.fromStation,
+            toStation:this.toStation,
             DistanceKm: this.DistanceKm
           })
           .then(res => {
@@ -211,15 +220,44 @@ export default {
           })
           .catch(error => {
             this.$notify({
-                group: "foo",
-                type: "danger",
-                title: "Important message",
-                text: error
-              });
+              group: "foo",
+              type: "danger",
+              title: "Important message",
+              text: error
+            });
             console.log(error);
           });
       } else {
         alert("Please fill the feilds");
+      }
+    },
+    removeStation(stationDistance) {
+      var r = confirm("Press a button!");
+      if (r == true) {
+        this.axios
+          .post("/Distance/Delete", {
+            id:stationDistance.id
+          })
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              this.populateStationDistances();
+              this.$notify({
+                group: "foo",
+                type: "success",
+                title: "Important message",
+                text: "successfull!"
+              });
+            }
+          })
+          .catch(error => {
+            this.$notify({
+              group: "foo",
+              type: "danger",
+              title: "Important message",
+              text: error
+            });
+          });
       }
     }
   }

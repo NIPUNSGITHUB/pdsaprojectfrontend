@@ -9,30 +9,34 @@
               <div class="text-left">
                 <label class="typo__label">From</label>
                 <multiselect
-                  v-model="value"
+                  v-if="isEdit == false"
+                  v-model="fromStation"
                   deselect-label="Can't remove this value"
-                  track-by="name"
+                  track-by="id"
                   label="name"
                   placeholder="Select one"
-                  :options="options"
+                  :options="stations"
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
+                <h5 v-else>{{ fromStation }}</h5>
               </div>
             </div>
             <div class="col-md-4">
               <div class="text-left">
                 <label class="typo__label">To</label>
                 <multiselect
-                  v-model="value"
+                  v-if="isEdit == false"
+                  v-model="toStation"
                   deselect-label="Can't remove this value"
-                  track-by="name"
+                  track-by="id"
                   label="name"
                   placeholder="Select one"
-                  :options="options"
+                  :options="stations"
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
+                <h5 v-else>{{ toStation }}</h5>
               </div>
             </div>
             <div class="col-md-4">
@@ -103,15 +107,28 @@
 export default {
   data() {
     return {
-      value: null,
-      options: [
-        { name: "Vue.js", language: "JavaScript" },
-        { name: "Rails", language: "Ruby" },
-        { name: "Sinatra", language: "Ruby" },
-        { name: "Laravel", language: "PHP", $isDisabled: true },
-        { name: "Phoenix", language: "Elixir" }
-      ]
+      stationId: null,
+      stationName: null,
+      stations: [],
+      isEdit: false
     };
+  },
+  mounted() {
+    this.populateStations();
+  },
+  methods: {
+    populateStations() {
+      this.axios
+        .get("/Station")
+        .then(res => {
+          console.log(res);
+          this.stations = res.data;
+          this.formReset();
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
   }
 };
 </script>
