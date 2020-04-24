@@ -18,6 +18,7 @@ Vue.use(VueRouter)
 Vue.component('multiselect', Multiselect) 
 Vue.use(Notifications)
 
+Vue.prototype.$baseUrl='http://pdsa-group4.azurewebsites.net/api';
 const routes = [
   {
     path: '/',
