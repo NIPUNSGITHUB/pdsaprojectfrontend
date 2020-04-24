@@ -134,8 +134,9 @@ export default {
         });
     },
     shortestPath() {
-      this.loadData = true;
+     
       if (this.fromStation != null && this.toStation != null) {
+        this.loadData = true;
         this.axios
           .post("/ShortestPath", {
             id: 9,
