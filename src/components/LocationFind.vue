@@ -96,7 +96,7 @@ export default {
   methods: {
     populateStations() {
       this.axios
-        .get("/Station")
+        .get(this.$baseUrl+"/Station")
         .then(res => {
           console.log(res);
           this.stations = res.data;
@@ -112,7 +112,7 @@ export default {
         this.toStation != null 
       ) {
         this.axios
-        .post("/ShortestPath", {
+        .post(this.$baseUrl+"/ShortestPath", {
           id: this.id,
           fromLocation: this.fromStation.name,
           toLocation: this.toStation.name

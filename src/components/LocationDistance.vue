@@ -135,7 +135,7 @@ export default {
     },
     populateStations() {
       this.axios
-        .get("/Station")
+        .get(this.$baseUrl+"/Station")
         .then(res => {
           console.log(res);
           this.stations = res.data;
@@ -153,7 +153,7 @@ export default {
     },
     populateStationDistances() {
       this.axios
-        .get("/Distance")
+        .get(this.$baseUrl+"/Distance")
         .then(res => {
           console.log(res);
           this.stationDistances = res.data;
@@ -177,7 +177,7 @@ export default {
       ) {
         if (this.fromStation.id != this.toStation.id) {
           this.axios
-            .post("/Distance", {
+            .post(this.$baseUrl+"/Distance", {
               fromStation: this.fromStation.name,
               toStation: this.toStation.name,
               DistanceKm: this.DistanceKm
@@ -212,7 +212,7 @@ export default {
     updateDistance() {
       if (this.DistanceKm != null) {
         this.axios
-          .post("/Distance", {
+          .post(this.$baseUrl+"/Distance", {
             id: this.id,
             fromStation: this.fromStation,
             toStation: this.toStation,
@@ -247,7 +247,7 @@ export default {
       var r = confirm("Press a button!");
       if (r == true) {
         this.axios
-          .post("/Distance/Delete", {
+          .post(this.$baseUrl+"/Distance/Delete", {
             id: stationDistance.id
           })
           .then(res => {

@@ -92,7 +92,7 @@ export default {
     createStation() {
       if (this.stationName != null) {
         this.axios
-          .post("/Station", {
+          .post(this.$baseUrl+"/Station", {
             Name: this.stationName
           })
           .then(res => {
@@ -123,7 +123,7 @@ export default {
     },
     updateStation() {
       this.axios
-        .post("/Station", {
+        .post(this.$baseUrl+"/Station", {
           Id: this.stationId,
           Name: this.stationName
         })
@@ -153,7 +153,7 @@ export default {
     },
     populateStations() {
       this.axios
-        .get("/Station")
+        .get(this.$baseUrl+"/Station")
         .then(res => {
           console.log(res);
           this.stations = res.data;
@@ -173,7 +173,7 @@ export default {
       var r = confirm("Press a button!");
       if (r == true) {
         this.axios
-          .post("/Station/Delete",station)
+          .post(this.$baseUrl+"/Station/Delete",station)
           .then(res => {
             console.log(res);
             if (res.status == 200) {
