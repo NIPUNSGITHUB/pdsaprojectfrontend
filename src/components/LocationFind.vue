@@ -138,7 +138,7 @@ export default {
       if (this.fromStation != null && this.toStation != null) {
         this.loadData = true;
         this.axios
-          .post("/ShortestPath", {
+          .post(this.$baseUrl+"/ShortestPath", {
             id: 9,
             fromLocation: this.fromStation.name,
             toLocation: this.toStation.name
