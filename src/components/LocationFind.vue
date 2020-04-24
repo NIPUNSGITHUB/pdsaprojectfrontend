@@ -3,13 +3,12 @@
     <div class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h4 class="card-title">Manage Destinations</h4>
+          <h4 class="card-title">Find Distance</h4>
           <div class="row">
             <div class="col-md-4">
               <div class="text-left">
                 <label class="typo__label">From</label>
                 <multiselect
-                  v-if="isEdit == false"
                   v-model="fromStation"
                   deselect-label="Can't remove this value"
                   track-by="id"
@@ -19,14 +18,12 @@
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
-                <h5 v-else>{{ fromStation }}</h5>
               </div>
             </div>
             <div class="col-md-4">
               <div class="text-left">
                 <label class="typo__label">To</label>
                 <multiselect
-                  v-if="isEdit == false"
                   v-model="toStation"
                   deselect-label="Can't remove this value"
                   track-by="id"
@@ -36,33 +33,63 @@
                   :searchable="false"
                   :allow-empty="false"
                 ></multiselect>
-                <h5 v-else>{{ toStation }}</h5>
               </div>
             </div>
-            <div class="col-md-4">
-            
-            </div>
+            <div class="col-md-4"></div>
           </div>
           <button class="btn btn-success float-right pb-4" @click="shortestPath">Search</button>
         </div>
       </div>
     </div>
+    <div v-if="loadData">
+      <div class="spinner-grow text-primary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-secondary" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-success" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-danger" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-warning" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-info" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-light" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+      <div class="spinner-grow text-dark" role="status">
+        <span class="sr-only">Loading...</span>
+      </div>
+    </div>
     <div class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h5 v-if="pathDetails != ''" class="card-title text-success">Minimum distance from {{ fromStation.name }} to {{ toStation.name }} is {{ minDistance }}km</h5>
+          <h5
+            v-if="pathDetails != ''"
+            class="card-title text-success"
+          >Minimum distance from {{ fromStation.name }} to {{ toStation.name }} is {{ minDistance }}km</h5>
           <h5 v-else class="card-title text-danger">Distance not found</h5>
         </div>
       </div>
     </div>
     <div v-if="pathDetails != ''" class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
-        <h5  class="card-title text-left">{{ fromStation.name }} to</h5>
+        <h5 class="card-title text-left">{{ fromStation.name }} to</h5>
         <ul class="list-group text-left">
           <li v-for="pathDetail in pathDetails" :key="pathDetail.key" class="list-group-item">
-            <strong>{{ pathDetail.key }}</strong>&nbsp;({{ pathDetail.value }})
-           <strong style="visibility:hidden" v-if="toStation.name == pathDetail.key">{{ minDistance = pathDetail.value }}</strong>
-          </li>        
+            <strong>{{ pathDetail.key }}</strong>
+            &nbsp;({{ pathDetail.value }})
+            <strong
+              style="visibility:hidden"
+              v-if="toStation.name == pathDetail.key"
+            >{{ minDistance = pathDetail.value }}</strong>
+          </li>
         </ul>
       </div>
     </div>
@@ -83,11 +110,11 @@ export default {
       stationId: null,
       stationName: null,
       stations: [],
-      isEdit: false,
+      loadData: false,
       fromStation: null,
       toStation: null,
-      pathDetails:[],
-      minDistance:0.0
+      pathDetails: [],
+      minDistance: 0.0
     };
   },
   mounted() {
@@ -96,7 +123,7 @@ export default {
   methods: {
     populateStations() {
       this.axios
-        .get(this.$baseUrl+"/Station")
+        .get(this.$baseUrl + "/Station")
         .then(res => {
           console.log(res);
           this.stations = res.data;
@@ -107,27 +134,28 @@ export default {
         });
     },
     shortestPath() {
-       if (
-        this.fromStation != null &&
-        this.toStation != null 
-      ) {
+      this.loadData = true;
+      if (this.fromStation != null && this.toStation != null) {
         this.axios
-        .post(this.$baseUrl+"/ShortestPath", {
-          id: this.id,
-          fromLocation: this.fromStation.name,
-          toLocation: this.toStation.name
-        })
-        .then(res => {
-          console.log(res);
-          if (res.status == 200) {
-            this.pathDetails = res.data;
-          }
-        })
-        .catch(error => {
-          alert(error)
-          console.log(error);
-        });
-      }else {
+          .post("/ShortestPath", {
+            id: 9,
+            fromLocation: this.fromStation.name,
+            toLocation: this.toStation.name
+          })
+          .then(res => {
+            console.log(res);
+            if (res.status == 200) {
+              this.pathDetails = res.data;
+            }
+            this.loadData = false;
+          })
+          .catch(error => {
+            this.loadData = false;
+
+            alert(error);
+            console.log(error);
+          });
+      } else {
         alert("Select the locations");
       }
     }

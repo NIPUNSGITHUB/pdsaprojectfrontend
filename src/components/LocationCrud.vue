@@ -78,6 +78,7 @@ export default {
   },
   mounted() {
     this.populateStations();
+   
   },
   methods: {
     formReset() {
@@ -153,7 +154,7 @@ export default {
     },
     populateStations() {
       this.axios
-        .get(this.$baseUrl+"/Station")
+        .get(this.$baseUrl + "/Station")
         .then(res => {
           console.log(res);
           this.stations = res.data;

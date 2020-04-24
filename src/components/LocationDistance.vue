@@ -3,7 +3,7 @@
     <div class="container">
       <div class="card shadow-lg p-3 mb-5 bg-white rounded">
         <div class="card-body">
-          <h4 class="card-title">Manage Destinations</h4>
+          <h4 class="card-title">Manage Distance</h4>
           <div class="row">
             <div class="col-md-4">
               <div class="text-left">
